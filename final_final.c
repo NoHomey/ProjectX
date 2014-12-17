@@ -1,28 +1,32 @@
 //--------------------------------------------
-// NAME: Ivan Ivanov
-// CLASS: XIa
-// NUMBER: 13
+// NAME: Ivo Stratev
+// CLASS: XIb
+// NUMBER: 16
 // PROBLEM: #1
 // FILE NAME: xxxxxx.yyy.zzz (unix file name)
 // FILE PURPOSE:
-// няколко реда, които описват накратко
-// предназначението на файла
-// ...
+// Piece implementation of unix command wc:
+// 	Count how many lines, words and bytes a given file contents and output the result on standart output.
+// 	If no file is given, as output is provided result from coontering how many lines, words and bytes standart input contents.
+// 	If the given file is provided as - as output is provided result from coontering how many lines, words and bytes standart input contents.
+// In this implementation are used only open(), read(), write() and close(): system functions and no other non-selfmade functions are used, such as: perror().
+// Whole output is done only by system calls by write().
+// No perror() function is used for writing error massages instead series of function calls are made that only use write() and errno is used to output the correct error massage.
 //---------------------------------------------
 
 //--------------------------------------------
 // HEADER: <sys/types.h>
-// предназначение на функцията
+// Required by system function: 
 //----------------------------------------------
 #include <sys/types.h>	
 //--------------------------------------------
 // HEADER: <sys/types.h>
-// предназначение на функцията
+// Required by system function: 
 //----------------------------------------------	
 #include <sys/stat.h>	
 //--------------------------------------------
 // HEADER: <sys/types.h>
-// предназначение на функцията
+// Required by system function: 
 //---------------------------------------------- 	
 #include <fcntl.h>
 //--------------------------------------------
@@ -32,218 +36,211 @@
 #include <stdio.h>
 //--------------------------------------------
 // HEADER: <sys/types.h>
-// предназначение на функцията
+// Required by system function: 
 //----------------------------------------------		
 #include <unistd.h>
 //--------------------------------------------
 // HEADER: <sys/types.h>
-// предназначение на функцията
+// Required in order to map errors throwed by all functions except main().
 //----------------------------------------------		
 #include <errno.h>
 
-//--------------------------------------------
-// VARIBLE: words
-// предназначение на функцията
-//----------------------------------------------
-int words = 0;
-//--------------------------------------------
-// VARIBLE: words
-// предназначение на функцията
-//----------------------------------------------	
-int bytes = 0;
-//--------------------------------------------
-// VARIBLE: words
-// предназначение на функцията
-//----------------------------------------------	
-int lines = 0;	
-//--------------------------------------------
-// VARIBLE: words
-// предназначение на функцията
-//----------------------------------------------	
-int total_words = 0;
-//--------------------------------------------
-// VARIBLE: words
-// предназначение на функцията
-//----------------------------------------------		
-int total_bytes = 0;
-//--------------------------------------------
-// VARIBLE: words
-// предназначение на функцията
-//----------------------------------------------					
-int total_lines = 0;	
+int words = 0;	//Used for counting words from file or stdin.
+int bytes = 0;	//Used for counting bytes from file or stdin.
+int lines = 0;	//Used for counting lines from file or stdin.
+int total_words = 0;	//Used for counting total words.
+int total_bytes = 0;	//Used for counting total bytes.
+int total_lines = 0;	//Used for counting total lines.	
 
 //--------------------------------------------
 // FUNCTION: get_extention
-// предназначение на функцията
-// PARAMETERS:
-// counter:
-// 
+// Returns lg counter (decimal logarithm of counter caliber)
+// PARAMETERS: counter
+// counter: Is used to calculate the rigth lg (counter caliber) in order to write counter properly.
 //----------------------------------------------
 int get_extention(int counter);	
 //--------------------------------------------
 // FUNCTION: write_counter
-// предназначение на функцията
-// PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// Writes counter value on stdout.
+// PARAMETERS: counter
+// counter: It's writed on stdout by value.
 //----------------------------------------------							
 int write_counter(int counter);
 //--------------------------------------------
 // FUNCTION: get_counters_from_file
-// предназначение на функцията
-// PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// Sets properly the global counters: lines, words and bytes for the given file.
+// PARAMETERS: file_pathname
+// file_pathname: Is used in order to set properly the global counters: lines, words and bytes for it.
 //----------------------------------------------							
 int get_counters_from_file(char *file_pathname);
 //--------------------------------------------
 // FUNCTION: get_counters_from_stdin
-// предназначение на функцията
+// Sets properly the global counters: lines, words and bytes for stdin content.
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// None
 //----------------------------------------------					
 int get_counters_from_stdin(void);	
 //--------------------------------------------
 // FUNCTION: write_reference
-// предназначение на функцията
+// Outputs reference value appending it on (excluding '\0') stderr if stream is 1 or on stdout if stream is different from 0.
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// reference, stream.
+// reference:
+//	Is used to be appened to stream pointed out by stream value.
+//stream:
+//	Is used to append reference to stream that points to.
 //----------------------------------------------						
 int write_reference(char *reference, int stream);
 //--------------------------------------------
 // FUNCTION: write_tab
-// предназначение на функцията
+// Appends tab char ('\t') to stream that stream points out.
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// reference, stream.
+// reference:
+//	Is used to appened tab char ('\t') to stream pointed out by stream value.
+//stream:
+//	Is used to append tab char ('\t') to stream that points to.
 //----------------------------------------------					
 int write_tab(int stream);	
 //--------------------------------------------
 // FUNCTION: write_newline
-// предназначение на функцията
+// Appends newline char ('\n') to stream that stream points out.
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// reference, stream.
+// reference:
+//	Is used to appened newline char ('\n') to stream pointed out by stream value.
+//stream:
+//	Is used to append newline char ('\n') to stream that points to.
 //----------------------------------------------								
 int write_newline(int stream);	
 //--------------------------------------------
 // FUNCTION: write_dots
-// предназначение на функцията
+// Appends colon char (':') to stream that stream points out.
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
-//----------------------------------------------						
+// reference, stream.
+// reference:
+//	Is used to appened colon char (':') to stream pointed out by stream value.
+//stream:
+//	Is used to append colon char (':') to stream that points to.
+//----------------------------------------------							
 int write_dots(int stream);
 //--------------------------------------------
 // FUNCTION: write_wc
-// предназначение на функцията
+// Appends w and c chars  to stream that stream points out.
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// reference, stream.
+// reference:
+//	Is used to appened w and c chars to stream pointed out by stream value.
+//stream:
+//	Is used to append w and c chars to stream that points to.
 //----------------------------------------------								
 int write_wc(int stream);	
 //--------------------------------------------
 // FUNCTION: write_total
-// предназначение на функцията
+// Appends t, o, t, a, and l chars  to stream that stream points out.
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// reference, stream.
+// reference:
+//	Is used to appened t, o, t, a, and l chars to stream pointed out by stream value.
+//stream:
+//	Is used to append t, o, t, a, and l chars to stream that points to.
 //----------------------------------------------									
 int write_total(int stream);	
 //--------------------------------------------
 // FUNCTION: write_total_counters
-// предназначение на функцията
+// Outputs on stdout values of total: lines, words and bytes and the string total(excluding '\0'), all seperated by tab folowed by newline.
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// total_lines, total_words, total_bytes
+// All three parameters are used in order to write their values on stdout.
 //----------------------------------------------								
 void write_total_counters(int total_lines, int total_words, int total_bytes);
 //--------------------------------------------
 // FUNCTION: wordcounter_file
-// предназначение на функцията
-// PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// Counts and outputs number of lines, words and bytes for the given file on stdout.
+// PARAMETERS: file_pathname.
+// file_pathname: Is used in order to count and output number of lines, words and bytes for it.
 //----------------------------------------------
 void wordcounter_file(char *file_pathname);
 //--------------------------------------------
 // FUNCTION: wordcounter_stdin
-// предназначение на функцията
-// PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// Counts and outputs number of lines, words and bytes for stdin content on stdout.
+// PARAMETERS: reference.
+// reference: Is used in order to output and append it's value to stdout.
 //----------------------------------------------						
 void wordcounter_stdin(char *reference);
 //--------------------------------------------
 // FUNCTION: write_error
-// предназначение на функцията
-// PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// Appends only the error massage to stderr wich error_number points out to.
+// PARAMETERS: error_number.
+// error_number: Is used to decode wich error massage to append to stderr with it's value.
 //----------------------------------------------						
 int write_error(int error_number);
 //--------------------------------------------
 // FUNCTION: write_error_massage
-// предназначение на функцията
+// Appends the complete error massage to stderr wich error_number points out to and where the error ocurred (sometimes this can be only a singel symbol or symbols, because the error ocurred while trying to write them to a given stream).
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// error, reference.
+// error:
+//	Used in order to write proper error massage (See: write_error()).
+// reference:
+//	Is used to know where the error ocurred(sometimes this can be only a singel symbol or symbols, because the error ocurred while trying to write them to a given stream)
 //----------------------------------------------							
 void write_error_massage(int error, char *reference);					
 
 //--------------------------------------------
 // FUNCTION: main
-// предназначение на функцията
+// Processed arguments passed on run time (also tells the program from where to start).
 // PARAMETERS:
-// списък с параметрите на функцията
-// и тяхното значение
+// argc, argv.
+// argc"
+//	Is taken on run time and retruns the number of arguments passed.
+// argv:
+//	Is taken on run time and retruns the different arguments and their values, those argument can be path to files, abstract reference to stdin and program name.
 //----------------------------------------------
 int main(int argc,char **argv)
 {
-	int i;
-	int total_flag = 1;
-	char stdin_name[1] = {'\0'};
+	int i;	//Define counter to iterate among arguments.
+	int total_flag = 1;	//Define flag in order to know when and when not to output the total number of counter for total: lines, words and bytes and set it to 1(to output them by default).
+	char stdin_name[1] = {'\0'};	//Define and inicializate and empty stdin name to use when only one argument is passed(program name).
 
-	if(argc < 3)
-		total_flag = 0;
+	if(argc < 3)	//If argument number is less then 3 set flag to 0 and don't output total.
+		total_flag = 0; //If enter inside the upper if set flag to 0.
 
-	if(argc == 1)
-		wordcounter_stdin(stdin_name);
+	if(argc == 1)	//If argument number is 1 (no arguments to processed are passed) output number of lines, words and bytes from stdin.
+		wordcounter_stdin(stdin_name);	//IF enter inside the upper if output number of lines, words and bytes from stdin.
 		
-	for(i = 1;i < argc;i++)
+	for(i = 1;i < argc;i++)	//Loop in order to iterate among arguments wich need to be processed.
 	{
-		if((argv[i][0] == '-') && (argv[i][1] == '\0'))
-			wordcounter_stdin(argv[i]);
+		if((argv[i][0] == '-') && (argv[i][1] == '\0'))	//If the argument is abstract reference to stdin ('-') output number of lines, words and bytes from stdin.
+			wordcounter_stdin(argv[i]);	//IF enter inside the upper if output number of lines, words and bytes from stdin.
 			
-		else
-			wordcounter_file(argv[i]);		 
+		else	//Otherwise treat argument as path to file and processed it.
+			wordcounter_file(argv[i]);	//IF enter inside the upper else output number of lines, words and bytes from the given file.		 
 	}
 
-	if(total_flag == 1)
-		write_total_counters(total_lines, total_words, total_bytes);
+	if(total_flag == 1)	//If flag that states do or don't output total counters for lines, words and bytes is 1 do output them.
+		write_total_counters(total_lines, total_words, total_bytes);	//IF enter inside the upper if output number of total: lines, words and bytes.
 		
-	return 0;
+	return 0;	//Retrun 0 wich means that program executed succesful and no fatal erros occured.
 }
 
 int get_extention(int counter)
 {
-	int i = 1;
-	while(1)
+	int i = 1;	//Define counter in order to get the rigth power of 10.
+	while(1)	//Infint loop from wich break only if got the rigth power of 10.
 	{
-		if((counter / i)  < 1)
-			return (i / 10);
+		if((counter / i)  < 1)	//If counter divided by i is less then 1 return i divided by 10.
+			return (i / 10);	//IF enter inside the upper if return i divided by 10..
 
-		i = i*10;	
+		i = i*10	//Increment i by multiple it with 10.
 	}
 }
 
 int write_counter(int counter)
 {
-	int counter_extention = get_extention(counter);
-	char digit_to_char[1];
-	char reference[] = {'I', 'n', ' ', 'f', 'u', 'n', 'c', 't', 'i', 'o', 'n', ':', ' ', 'w', 'r', 'i', 't', 'e', '_', 'c', 'o', 'u', 'n', 't', 'e', 'r', '\0'};
+	int counter_extention = get_extention(counter);	//Define a varible and set it with value retruned by get_extention() in order to be used as counter in futere phase of function execution.
+	char digit_to_char[1];	//Define a single empty varible to holde the digit wich will be writen as charecter.
+	char reference[] = {'I', 'n', ' ', 'f', 'u', 'n', 'c', 't', 'i', 'o', 'n', ':', ' ', 'w', 'r', 'i', 't', 'e', '_', 'c', 'o', 'u', 'n', 't', 'e', 'r', '\0'};	//Define and inicializate a string in order to be used to state that error occured while executing this function.
 	if(counter_extention <= 0)
 	{
 		digit_to_char[0] = 48;
