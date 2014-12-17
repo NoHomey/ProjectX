@@ -241,63 +241,63 @@ int write_counter(int counter)
 	int counter_extention = get_extention(counter);	//Define a varible and set it with value retruned by get_extention() in order to be used as counter in futere phase of function execution.
 	char digit_to_char[1];	//Define a single empty varible to holde the digit wich will be writen as charecter.
 	char reference[] = {'I', 'n', ' ', 'f', 'u', 'n', 'c', 't', 'i', 'o', 'n', ':', ' ', 'w', 'r', 'i', 't', 'e', '_', 'c', 'o', 'u', 'n', 't', 'e', 'r', '\0'};	//Define and inicializate a string in order to be used to state that error occured while executing this function.
-	if(counter_extention <= 0)
-	{
-		digit_to_char[0] = 48;
-		int status_returned = write(STDOUT_FILENO, digit_to_char, 1);
-				if((status_returned != 1) && (errno > 0))
+	if(counter_extention <= 0)	//if counter value is 0 (counter caliber is less or equal to 0).
+	{	//If entered inside upper loop do:
+		digit_to_char[0] = 48;	//Temporary hold 0 charecter.
+		int status_returned = write(STDOUT_FILENO, digit_to_char, 1);	//Write 0 to stdout.
+				if((status_returned != 1) && (errno > 0))	//IF error ocured while writing 0 write proper error massage and retrun 1 (function failed).
 				{
-					write_error_massage(errno, reference);
+					write_error_massage(errno, reference);	//If entered inside upper if send proper error massage and indicate that this function failed.
 	
-					return 1;
+					return 1;	//Indicate that something went wrong.
 				}
 	}
-	else if(counter_extention == 1)
-	{
-		while(counter > 0)
+	else if(counter_extention == 1)	//else if counter caliber is 1 (it's a singel digit) write it to stdout (BELJKA DO MEN PROVERI KAKVO SHTE STANE AKO NQMASH WHILE A SAMO IZVEJDANE) .
+	{//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		while(counter > 0)	//while counter is greater than 0 do:
 		{
-			digit_to_char[0] = (counter % 10) + 48;
-			counter = counter / 10;
-			if(digit_to_char[0] >= 48 && digit_to_char[0] <= 57)
+			digit_to_char[0] = (counter % 10) + 48;	//Convert digit from integer to charecter and set this value to digit_to_char to holde it temporary.
+			counter = counter / 10;	//Decrement counter by deviding it with 10.
+			if(digit_to_char[0] >= 48 && digit_to_char[0] <= 57)	//If value od digit_to_char is a valid number write it to stdout.
 			{
-				int status_returned = write(STDOUT_FILENO, digit_to_char, 1);
-				if((status_returned != 1) && (errno > 0))
+				int status_returned = write(STDOUT_FILENO, digit_to_char, 1);	//Write digit_to_cahr value to stdout.
+				if((status_returned != 1) && (errno > 0))	//If writing digit_to_char failed send proper error massage and indicate that this function failed by returnig 1.
 				{
-					write_error_massage(errno, reference);	
+					write_error_massage(errno, reference);		//Send proper error massage that error ocurred while executing this function.
 			
-					return 1;
+					return 1;	//Indicate that something went wrong while executing this function.
 				}
 			}
 		}
 	}
-	else
+	else	//Otherwise write counter wich caliber is greater than 1.
 	{
-		while(counter_extention > 0)
+		while(counter_extention > 0)	//While counter caliber is greater than 0, write single digit to stdout.
 		{
-			digit_to_char[0] = (counter / counter_extention) + 48;
-			counter = counter % counter_extention;
-			counter_extention = counter_extention / 10;
-			if(digit_to_char[0] >= 48 && digit_to_char[0] <= 57)
+			digit_to_char[0] = (counter / counter_extention) + 48;	//Set temporary value to digit_to_char to hold.
+			counter = counter % counter_extention;	//Decrement counter by making modular division with counter_extention (caliber value).
+			counter_extention = counter_extention / 10;	//Decrement counter_extention (counter value) by diveding it with 10.
+			if(digit_to_char[0] >= 48 && digit_to_char[0] <= 57)	//If value od digit_to_char is a valid number write it to stdout.
 			{
-				int status_returned = write(STDOUT_FILENO, digit_to_char, 1);
-				if((status_returned != 1) && (errno > 0))
+				int status_returned = write(STDOUT_FILENO, digit_to_char, 1);	//Write digit_to_cahr value to stdout.
+				if((status_returned != 1) && (errno > 0))	//If writing digit_to_char failed send proper error massage and indicate that this function failed by returnig 1.
 				{
-					write_error_massage(errno, reference);
+					write_error_massage(errno, reference);	//Send proper error massage that error ocurred while executing this function.
 
-					return 1;
+					return 1;	//Indicate that something went wrong while executing this function.
 				}
 			}
 		}
 	}
 
-	return 0;
+	return 0;	//If no error ocurred while executing this function indicate it by returning 0.
 }
 
 int get_counters_from_file(char * file_pathname)
 {	
-	int file_discriptor = open(file_pathname, O_RDONLY);
-	if(file_pathname[0] == '-')
-		errno = 22;
+	int file_discriptor = open(file_pathname, O_RDONLY);	//Define and set value to file_discriptor by returning the first free file descriptor (file descriptor is:  a small non negative digit that is returned if system function open() succesfuly executed) from opening the given file with system function open().
+	if(file_pathname[0] == '-')	//If file_pathname is starting with '-' that means that it's given as argument in wich case take reaction and set errno to 22 (invalid argument), because in this implementaion arguments aren't provided. 
+		errno = 22;	//Set errno properly, because open only sets it to 2 (No such file or directory) and this implemntaion trys to be as close to real wc as possible.
 	if((file_pathname[0] == '-') && (file_pathname[1] == '-'))
 		errno = 125;
 	if((file_discriptor == -1) && (errno > 0))	
