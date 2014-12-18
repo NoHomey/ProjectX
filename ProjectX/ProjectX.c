@@ -373,7 +373,7 @@ int get_counters_from_stdin(void)
 		int status_returned = read(STDIN_FILENO, buffer, 1);	//Read one byte from stdin using system function read() and save it's value in buffer to be holded.
 		if((status_returned != 1) && (errno > 0))	//If error ocurred while reading from stdinand errno is set properly wirte coresponding error massage and indicate that something went wrong while executing this function.
 		{
-			write_error_massage(errno,file_pathname); 	//If entered inside upper if send proper error massage that error ocurred while executing this function.
+			write_error_massage(errno,reference); 	//If entered inside upper if send proper error massage that error ocurred while executing this function.
 			
 			return 1;	//Indicate that something went wrong while executing this function and exit.
 		}
@@ -397,6 +397,7 @@ int get_counters_from_stdin(void)
 
 			if(buffer[0] == '\n')	//If value holded in buffer is newline increment lines counter to indicate that newline was properly read.
 				lines++;
+		}
 	}
 
 	//Increment total counter for: words, bytes and lines with values of words, bytes and lines respectivly.
@@ -878,7 +879,7 @@ int write_error(int error_number)
 		}
 	}
 	
-	errno = 0	//Reset errno to 0 (just in case some error ocurred).
+	//errno = 0;	//Reset errno to 0 (just in case some error ocurred).
 	
 	return 0;	//If no error occured while executing this function indnicate it by returning 0.
 }
