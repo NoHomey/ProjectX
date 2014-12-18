@@ -879,7 +879,7 @@ int write_error(int error_number)
 		}
 	}
 	
-	//errno = 0;	//Reset errno to 0 (just in case some error ocurred).
+	errno = 0;	//Reset errno to 0 (just in case some error ocurred).
 	
 	return 0;	//If no error occured while executing this function indnicate it by returning 0.
 }
