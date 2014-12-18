@@ -12,6 +12,10 @@
 // In this implementation are used only open(), read(), write() and close(): system functions and no other non-selfmade functions are used, such as: perror() or printf().
 // Whole output is done only by system calls by write().
 // No perror() function is used for writing error massages instead series of function calls are made that only use write() and errno is used to output the correct error massage.
+// Arguments (other then on run time procced by main) and options aren't includede in this implemntaion but program behaviur is as close to wc as possible in this relation.
+// Repository for program development can be found at: https://github.com/NoHomey/ProjectX
+// Final product can be found at: https://github.com/NoHomey/ProjectX/blob/master/ProjectX/ProjectX.c
+// In order to run this program simply type: "make" in command shell (for: linux and unix based platforms only).
 //---------------------------------------------
 
 //--------------------------------------------
