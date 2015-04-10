@@ -1,4 +1,4 @@
 ProjectX
 ========
 
-Repo for ProjectX
+ProjectX is my implementation of unix wc.
