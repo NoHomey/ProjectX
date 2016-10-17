@@ -1,4 +1,4 @@
-ProjectX
+#ProjectX_wc 
 ========
 
-ProjectX is my implementation of unix wc.
+ProjectX_wc was mine implementation of `unix wc command` done as school homework for `Operation system` course in ***ELSYS (TUES) - Technological shcool "Electronic systems"***.

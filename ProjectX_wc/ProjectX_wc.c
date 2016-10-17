@@ -3,7 +3,7 @@
 // CLASS: XIb
 // NUMBER: 16
 // PROBLEM: #1
-// FILE NAME: ProjectX.c
+// FILE NAME: ProjectX_wc.c
 // FILE PURPOSE:
 // Piece implementation of unix command wc:
 // 	Count how many lines, words and bytes a given file contents and output the result on standart output.
